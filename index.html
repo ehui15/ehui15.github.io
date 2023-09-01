@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>积硅步以至千里</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="积硅步以至千里">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="积硅步以至千里">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="ehui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="积硅步以至千里" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">积硅步以至千里</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-C-实现线程安全的单例模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/30/C-%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="article-date">
+  <time class="dt-published" datetime="2023-08-30T15:00:00.000Z" itemprop="datePublished">2023-08-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/08/30/C-%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">C++实现线程安全的单例模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="单例模式的分类"><a href="#单例模式的分类" class="headerlink" title="单例模式的分类"></a>单例模式的分类</h2><ul>
+<li>懒汉式：在使用到类的实例时才创建。</li>
+<li>饿汉式：在系统一开始运行的时候就创建类的实例。</li>
+</ul>
+<p>懒汉式存在线程安全问题，饿汉式不存在。</p>
+<h2 id="实现饿汉式单例"><a href="#实现饿汉式单例" class="headerlink" title="实现饿汉式单例"></a>实现饿汉式单例</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton *<span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sm_singleton;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">destoryInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sm_singleton)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">delete</span> sm_singleton;</span><br><span class="line">            sm_singleton = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">Singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止拷贝和赋值</span></span><br><span class="line">    Singleton &amp;oprator=(<span class="type">const</span> Singleton &amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton &amp;singleton2) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> Singleton *sm_singleton;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Singleton *Singleton::sm_singleton = <span class="keyword">new</span> Singleton;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现线程安全的懒汉式单例"><a href="#实现线程安全的懒汉式单例" class="headerlink" title="实现线程安全的懒汉式单例"></a>实现线程安全的懒汉式单例</h2><h3 id="Double-Checked-Locking-Pattern"><a href="#Double-Checked-Locking-Pattern" class="headerlink" title="Double-Checked Locking Pattern"></a>Double-Checked Locking Pattern</h3><p>对创建实例部分的代码加锁，竞争到锁之后，再次检查是否已创建实例（可能别的线程先竞争到锁完成创建）。相对于获取实例的过程全程加锁，性能要好不少。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton *<span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sm_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(sm_mutex)</span></span>;</span><br><span class="line">            <span class="keyword">if</span> (sm_instance == <span class="literal">nullptr</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                sm_instance = <span class="keyword">new</span> Singleton;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sm_instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">destoryInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sm_instance)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">delete</span> sm_instance;</span><br><span class="line">            sm_instance = <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 释放其他资源</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">Singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止拷贝和赋值</span></span><br><span class="line">    Singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Singleton &amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton &amp;singleton2) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> Singleton *sm_instance;</span><br><span class="line">    <span class="type">static</span> std::mutex sm_mutex;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Singleton *Singleton::sm_instance = <span class="literal">nullptr</span>;</span><br><span class="line">std::mutex Singleton::sm_mutex;</span><br></pre></td></tr></table></figure>
+
+<p>使用智能指针自动管理资源。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton &amp;<span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sm_instance == <span class="literal">nullptr</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(sm_mutex)</span></span>;</span><br><span class="line">            <span class="keyword">if</span> (sm_instance == <span class="literal">nullptr</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                sm_instance.<span class="built_in">reset</span>(<span class="keyword">new</span> Singleton);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *sm_instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">Singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止拷贝和赋值</span></span><br><span class="line">    Singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Singleton &amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton &amp;singleton2) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> std::unique_ptr&lt;Singleton&gt; sm_instance;</span><br><span class="line">    <span class="type">static</span> std::mutex sm_mutex;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">std::unique_ptr&lt;Singleton&gt; Singleton::sm_instance;</span><br><span class="line">std::mutex Singleton::sm_mutex;</span><br></pre></td></tr></table></figure>
+
+<h4 id="存在缺陷"><a href="#存在缺陷" class="headerlink" title="存在缺陷"></a>存在缺陷</h4><p>实例创建的时候有三个步骤：</p>
+<ol>
+<li>申请一片内存空闲区域。</li>
+<li>在该区域调用构造函数创建实例。</li>
+<li>将区域地址赋给实例指针。</li>
+</ol>
+<p>编译器有可能先执行步骤 1 和步骤 3 ，导致实力指针不为空，若此时有其他的线程获取实例，获取的是未初始化的内存区域。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf">C++ and the Perils of Double-Checked Locking</a></p>
+</blockquote>
+<h3 id="局部静态变量"><a href="#局部静态变量" class="headerlink" title="局部静态变量"></a>局部静态变量</h3><p>在获取实例对象时，定义静态变量并完成初始化，然后返回该变量。由于静态变量的初始化只会执行一次，而且变量的生命周期延长到程序结束，实现了单例对象的生命周期管理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton &amp;<span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">static</span> Singleton inst;</span><br><span class="line">        <span class="keyword">return</span> inst;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">Singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止拷贝和赋值</span></span><br><span class="line">    Singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Singleton &amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton &amp;singleton2) = <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="std-call-once"><a href="#std-call-once" class="headerlink" title="std::call_once"></a>std::call_once</h3><p>C++11中提供的方法，使得函数可以被线程安全地调用一次。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton &amp;<span class="title">instance</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="type">static</span> std::once_flag flag;</span><br><span class="line">        std::<span class="built_in">call_once</span>(flag, [&amp;]()&#123;</span><br><span class="line">            sm_instance.<span class="built_in">reset</span>(<span class="keyword">new</span> Singleton);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> *sm_instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造函数</span></span><br><span class="line">    <span class="built_in">Singleton</span>() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止拷贝和赋值</span></span><br><span class="line">    Singleton &amp;<span class="keyword">operator</span>=(<span class="type">const</span> Singleton &amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    <span class="built_in">Singleton</span>(<span class="type">const</span> Singleton &amp;singleton2) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">static</span> std::unique_ptr&lt;Singleton&gt; sm_instance;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">std::unique_ptr&lt;Singleton&gt; Singleton::sm_instance;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011726005/article/details/82356538">C++11实现线程安全的单例模式(使用std::call_once)</a></p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/30/C-%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" data-id="clm0lcq2z0000nouebjrkb9jo" data-title="C++实现线程安全的单例模式" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/30/hello-world/" class="article-date">
+  <time class="dt-published" datetime="2023-08-30T02:48:40.414Z" itemprop="datePublished">2023-08-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/08/30/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/30/hello-world/" data-id="clm0lcq320001nouedeap9jew" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/08/30/C-%E5%AE%9E%E7%8E%B0%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">C++实现线程安全的单例模式</a>
+          </li>
+        
+          <li>
+            <a href="/2023/08/30/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 ehui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
